@@ -1,6 +1,5 @@
 <?php
-
-namespace Spdevs\AuthorizePay;
+namespace AuthorizePay;
 
 trait AuthorizeStatuses
 {

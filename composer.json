@@ -1,6 +1,5 @@
 {
     "name": "spdevs/authorizepay",
-    "type": "library",
     "description": "Payment library based on AuthorizeNet",
     "license": "MIT",
     "authors": [
@@ -22,5 +21,6 @@
         "psr-4": {
             "AuthorizePay\\": "src"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }

@@ -1,5 +1,5 @@
 <?php
-namespace Spdevs\AuthorizePay;
+namespace AuthorizePay;
 
 use Illuminate\Support\ServiceProvider;
 

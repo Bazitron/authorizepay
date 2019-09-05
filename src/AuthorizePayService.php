@@ -1,5 +1,5 @@
 <?php
-namespace Spdevs\AuthorizePay;
+namespace AuthorizePay;
 
 use App\Entities\PaymentEntity;
 use net\authorize\api\constants\ANetEnvironment;
