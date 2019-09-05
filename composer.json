@@ -1,6 +1,14 @@
 {
     "name": "spdevs/authorizepay",
+    "type": "library",
     "description": "Payment library based on AuthorizeNet",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Serhii Topolnytskyi",
+            "email": "serhii.topolnytskyi@gmail.com"
+        }
+    ],
     "require": {
         "php": "^7.2",
         "authorizenet/authorizenet": "~2.0.0"
@@ -10,11 +18,9 @@
         "mockery/mockery": "^1.0",
         "phpunit/phpunit": "^7.0"
     },
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Serhii Topolnytskyi",
-            "email": "serhii.topolnytskyi@gmail.com"
+    "autoload": {
+        "psr-4": {
+            "AuthorizePay\\": "src"
         }
-    ]
+    }
 }
