@@ -1,4 +1,5 @@
 <?php
+
 namespace AuthorizePay;
 
 use App\Entities\PaymentEntity;
@@ -135,7 +136,7 @@ class AuthorizePayService
     {
         $this->merchantAuthentication = $this->merchantAuthentication();
 
-        if(app()->environment('production')) {
+        if (app()->environment('production')) {
             $this->endpoint = ANetEnvironment::PRODUCTION;
         } else {
             $this->endpoint = ANetEnvironment::SANDBOX;
@@ -148,8 +149,9 @@ class AuthorizePayService
     private function merchantAuthentication(): AnetAPI\MerchantAuthenticationType
     {
         $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
-        $merchantAuthentication->setName( config('authorizepay.MERCHANT_LOGIN_ID') );
-        $merchantAuthentication->setTransactionKey( config('authorizepay.MERCHANT_TRANSACTION_KEY') );
+        $merchantAuthentication->setName(config('authorizepay.MERCHANT_LOGIN_ID'));
+        $merchantAuthentication->setTransactionKey(config('authorizepay.MERCHANT_TRANSACTION_KEY'));
+
         return $merchantAuthentication;
     }
 
@@ -160,6 +162,7 @@ class AuthorizePayService
                 trans('authorizepay.ERROR_NO_RESPONSE_RETURNED'),
                 'ERROR_NO_RESPONSE_RETURNED'
             );
+
             return false;
         }
 
@@ -178,6 +181,7 @@ class AuthorizePayService
                     $response->getMessages()->getMessage()[0]->getCode()
                 );
             }
+
             return false;
         }
 
@@ -188,6 +192,7 @@ class AuthorizePayService
                     $transactionResponse->getErrors()[0]->getErrorCode()
                 );
             }
+
             return false;
         }
         $this->transId = $transactionResponse->getTransId();
@@ -196,6 +201,7 @@ class AuthorizePayService
         $this->messageCode = $transactionResponse->getMessages()[0]->getCode();
         $this->messageDescription = $transactionResponse->getMessages()[0]->getDescription();
         $this->accountType = $transactionResponse->getAccountType();
+
         return true;
     }
 
@@ -211,8 +217,8 @@ class AuthorizePayService
     protected function _makeOrderType(): AnetAPI\OrderType
     {
         $order = new AnetAPI\OrderType();
-        $order->setInvoiceNumber( $this->paymentEntity->getInvoiceId() );
-        $order->setDescription( $this->paymentEntity->getDescription() );
+        $order->setInvoiceNumber($this->paymentEntity->getInvoiceId());
+        $order->setDescription($this->paymentEntity->getDescription());
 
         return $order;
     }
@@ -223,13 +229,14 @@ class AuthorizePayService
     protected function _makeCustomerAddress(): AnetAPI\CustomerAddressType
     {
         $address = new AnetAPI\CustomerAddressType();
-        $address->setFirstName( $this->paymentEntity->getFirstName() );
-        $address->setLastName( $this->paymentEntity->getLastName() );
-        $address->setAddress( $this->paymentEntity->getBillingAddress() );
-        $address->setCity( $this->paymentEntity->getBillingCity() );
-        $address->setState( $this->paymentEntity->getBillingState() );
-        $address->setZip( sprintf('%05d', (int) $this->paymentEntity->getBillingZip()) );
-        $address->setCountry( $this->paymentEntity->getBillingCountry() );
+        $address->setFirstName($this->paymentEntity->getFirstName());
+        $address->setLastName($this->paymentEntity->getLastName());
+        $address->setAddress($this->paymentEntity->getBillingAddress());
+        $address->setCity($this->paymentEntity->getBillingCity());
+        $address->setState($this->paymentEntity->getBillingState());
+        $address->setZip(sprintf('%05d', (int) $this->paymentEntity->getBillingZip()));
+        $address->setCountry($this->paymentEntity->getBillingCountry());
+
         return $address;
     }
 
@@ -241,7 +248,7 @@ class AuthorizePayService
         $customer = new AnetAPI\CustomerDataType();
         $customer->setType('individual'); //todo: move to config()
         $customer->setId('999999');
-        $customer->setEmail( $this->paymentEntity->getEmail() );
+        $customer->setEmail($this->paymentEntity->getEmail());
 
         return $customer;
     }
@@ -266,7 +273,7 @@ class AuthorizePayService
         $creditCard = new AnetAPI\CreditCardType();
         $creditCard->setCardNumber($this->paymentEntity->getCardNumber());
         $creditCard->setExpirationDate($this->paymentEntity->getCardExpiration());
-        if($this->paymentEntity->getCardCvv()) {
+        if ($this->paymentEntity->getCardCvv()) {
             $creditCard->setCardCode($this->paymentEntity->getCardCvv());
         }
 
@@ -279,21 +286,23 @@ class AuthorizePayService
     protected function _makePayment() : AnetAPI\PaymentType
     {
         $payment = new AnetAPI\PaymentType();
-        $payment->setCreditCard( $this->_makeCreditCard() );
+        $payment->setCreditCard($this->_makeCreditCard());
 
         return $payment;
     }
 
     /**
      * @param string $type
-     * @return AnetAPI\CreateTransactionRequest
+     *
      * @throws \Exception
+     *
+     * @return AnetAPI\CreateTransactionRequest
      */
     protected function _makeTransactionRequest($type): AnetAPI\CreateTransactionRequest
     {
         $request = new AnetAPI\CreateTransactionRequest();
         $request->setMerchantAuthentication($this->merchantAuthentication);
-        $request->setRefId('ref' . time() );
+        $request->setRefId('ref'.time());
 
         switch ($type) {
             case 'authCaptureTransaction': //todo: move to const
@@ -316,6 +325,7 @@ class AuthorizePayService
 
     /**
      * @param $controller
+     *
      * @return AnetAPI\AnetApiResponseType
      */
     protected function _execute($controller): AnetAPI\AnetApiResponseType
@@ -325,6 +335,7 @@ class AuthorizePayService
 
     /**
      * @param $transactionId
+     *
      * @return AnetAPI\GetTransactionDetailsRequest
      */
     protected function _makeTransactionDetailsRequest($transactionId): AnetAPI\GetTransactionDetailsRequest
@@ -338,6 +349,7 @@ class AuthorizePayService
 
     /**
      * @param AnetAPI\GetTransactionDetailsRequest $request
+     *
      * @return AnetController\GetTransactionDetailsController
      */
     protected function _makeGetTransactionDetailsController(AnetAPI\GetTransactionDetailsRequest $request): AnetController\GetTransactionDetailsController
@@ -347,6 +359,7 @@ class AuthorizePayService
 
     /**
      * @param AnetAPI\CreateTransactionRequest $request
+     *
      * @return AnetController\CreateTransactionController
      */
     protected function _makeCreateTransactionController(AnetAPI\CreateTransactionRequest $request): AnetController\CreateTransactionController
@@ -355,26 +368,29 @@ class AuthorizePayService
     }
 
     /**
-     * Overwrite method
+     * Overwrite method.
+     *
      * @param string $type
+     *
      * @return AnetAPI\TransactionRequestType
      */
     protected function _makeTransactionRequestTypeCapture($type): AnetAPI\TransactionRequestType
     {
         $transaction = new AnetAPI\TransactionRequestType();
         $transaction->setTransactionType($type);
-        $transaction->setAmount( $this->paymentEntity->getAmount() );
-        $transaction->setOrder( $this->_makeOrderType() );
-        $transaction->setPayment( $this->_makePayment() );
-        $transaction->setBillTo( $this->_makeCustomerAddress() );
-        $transaction->setCustomer( $this->_makeCustomerData() );
-        $transaction->addToTransactionSettings( $this->_makeSetting() );
+        $transaction->setAmount($this->paymentEntity->getAmount());
+        $transaction->setOrder($this->_makeOrderType());
+        $transaction->setPayment($this->_makePayment());
+        $transaction->setBillTo($this->_makeCustomerAddress());
+        $transaction->setCustomer($this->_makeCustomerData());
+        $transaction->addToTransactionSettings($this->_makeSetting());
 
         return $transaction;
     }
 
     /**
      * @param string $type
+     *
      * @return AnetAPI\TransactionRequestType
      */
     protected function _makeTransactionRequestTypeVoid($type): AnetAPI\TransactionRequestType
@@ -388,6 +404,7 @@ class AuthorizePayService
 
     /**
      * @param string $type
+     *
      * @return AnetAPI\TransactionRequestType
      */
     protected function _makeTransactionRequestTypeRefund($type): AnetAPI\TransactionRequestType
@@ -403,6 +420,7 @@ class AuthorizePayService
 
     /**
      * @param $id
+     *
      * @return AnetAPI\TransactionDetailsType|null
      */
     public function getTransaction($id): ?AnetAPI\TransactionDetailsType
@@ -429,6 +447,7 @@ class AuthorizePayService
 
     /**
      * @param PaymentEntity $paymentEntity
+     *
      * @return bool
      */
     public function captureTransaction(PaymentEntity $paymentEntity): bool
@@ -438,6 +457,7 @@ class AuthorizePayService
 
     /**
      * @param PaymentEntity $paymentEntity
+     *
      * @return bool
      */
     public function refundTransaction(PaymentEntity $paymentEntity): bool
@@ -447,6 +467,7 @@ class AuthorizePayService
 
     /**
      * @param PaymentEntity $paymentEntity
+     *
      * @return bool
      */
     public function voidTransaction(PaymentEntity $paymentEntity): bool
@@ -456,24 +477,28 @@ class AuthorizePayService
 
     /**
      * ToDo: drop it!
+     *
      * @param PaymentEntity $paymentEntity
-     * @return bool
+     *
      * @throws \Exception
+     *
+     * @return bool
      */
     public function refund(PaymentEntity $paymentEntity): bool
     {
         $this->paymentEntity = $paymentEntity;
 
         $transaction = $this->getTransaction($this->paymentEntity->getTransactionId());
-        if(null === $transaction) {
+        if (null === $transaction) {
             $this->_setError(
                 trans('authorizepay.ERROR_TRANSACTION_NOT_EXIST'),
                 'ERROR_TRANSACTION_NOT_EXIST'
             );
+
             return false;
         }
 
-        if(self::isSettled($transaction->getTransactionStatus())) {
+        if (self::isSettled($transaction->getTransactionStatus())) {
             $request = $this->_makeTransactionRequest('refundTransaction'); //todo: move to const
         } else {
             $request = $this->_makeTransactionRequest('voidTransaction');

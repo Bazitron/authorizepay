@@ -1,4 +1,5 @@
 <?php
+
 namespace AuthorizePay;
 
 use Illuminate\Support\ServiceProvider;
@@ -12,9 +13,9 @@ class AuthorizePayServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../lang/en.php', 'authorizepay');
+        $this->loadTranslationsFrom(__DIR__.'/../lang/en.php', 'authorizepay');
         $this->publishes([
-            __DIR__ . '/../config/authorizepay.php' => config_path('authorizepay.php'),
+            __DIR__.'/../config/authorizepay.php' => config_path('authorizepay.php'),
         ]);
     }
 
@@ -29,8 +30,6 @@ class AuthorizePayServiceProvider extends ServiceProvider
             return new AuthorizePayService();
         });
 
-        $this->mergeConfigFrom( __DIR__ . '/../config/authorizepay.php', 'authorizepay');
+        $this->mergeConfigFrom(__DIR__.'/../config/authorizepay.php', 'authorizepay');
     }
-
-
 }
