@@ -1,4 +1,5 @@
 <?php
+
 namespace AuthorizePay;
 
 trait AuthorizeStatuses
