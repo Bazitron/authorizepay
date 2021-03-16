@@ -10,7 +10,7 @@
     ],
     "require": {
         "php": "^7.2",
-        "authorizenet/authorizenet": "~2.0.0"
+        "authorizenet/authorizenet": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
